@@ -20,6 +20,9 @@ exports.load = (req, res, next, quizId) => {
 // GET /quizzes
 exports.index = (req, res, next) => {
 
+    req.session.score = 0;
+    req.session.questions = [];
+
     models.quiz.findAll()
     .then(quizzes => {
         res.render('quizzes/index.ejs', {quizzes});
@@ -180,6 +183,8 @@ exports.randomplay = (req, res, next) => {
                         questions
                     });
                 } else {
+                    req.session.score = 0;
+                    req.session.questions = [];
                     throw new Error('There is no quiz with id=' + id);
                 }
             });
@@ -205,6 +210,8 @@ exports.randomplay = (req, res, next) => {
                     questions
                 });
             } else {
+                req.session.score = 0;
+                req.session.questions = [];
                 throw new Error('There is no quiz with id=' + id);
             }
         })
@@ -223,6 +230,9 @@ exports.randomcheck = (req, res, next) => {
 
     if(result){
         req.session.score++;
+    } else {
+        req.session.score = 0;
+        req.session.questions = [];
     }
 
     var score = req.session.score || 0;
@@ -236,6 +246,8 @@ exports.randomcheck = (req, res, next) => {
             score
         });
     } else {
+        req.session.score = 0;
+        req.session.questions = [];
         res.render('quizzes/random_nomore', {score});
     }
 };
