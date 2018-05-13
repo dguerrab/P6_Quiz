@@ -166,25 +166,25 @@ exports.randomplay = (req, res, next) => {
         .each(quiz => {
             questions.push(quiz.id);
         }).then(() => {
-            questions[Math.floor(Math.random()*questions.length)];
-        }).then(id => {
+            var id = questions[Math.floor(Math.random()*questions.length)];
             models.quiz.findById(id)
-        }).then(quiz => {
-            if (quiz) {
-                done.push(id);
-                questions.splice(id, 1);
-                const {query} = req;
-                const answer = query.answer || '';
-                res.render('quizzes/randomplay', {
-                    quiz,
-                    answer,
-                    score,
-                    done,
-                    questions
-                });
-            } else {
-                throw new Error('There is no quiz with id=' + quizId);
-            }
+            .then(quiz => {
+                if (quiz) {
+                    done.push(id);
+                    questions.splice(id, 1);
+                    const {query} = req;
+                    const answer = query.answer || '';
+                    res.render('quizzes/randomplay', {
+                        quiz,
+                        answer,
+                        score,
+                        done,
+                        questions
+                    });
+                } else {
+                    throw new Error('There is no quiz with id=' + id);
+                }
+            });
         })
         .catch(error => next(error));
     } else {
@@ -204,7 +204,7 @@ exports.randomplay = (req, res, next) => {
                     questions
                 });
             } else {
-                throw new Error('There is no quiz with id=' + quizId);
+                throw new Error('There is no quiz with id=' + id);
             }
         })
         .catch(error => next(error));
