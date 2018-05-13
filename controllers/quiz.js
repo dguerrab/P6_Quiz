@@ -163,7 +163,7 @@ exports.randomplay = (req, res, next) => {
 
     if (score == 0){
         models.quiz.findAll()
-        .forEach(quiz => {
+        .each(quiz => {
             questions.push(quiz.id);
         }).then(() => {
             questions[Math.floor(Math.random()*questions.length)];
@@ -216,11 +216,16 @@ exports.randomcheck = (req, res, next) => {
 
     const {quiz, query} = req;
 
-    var score = req.session.score || 0;
-    var done = req.session.done || [];
-
     const answer = query.answer || "";
     const result = answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim();
+
+    if(result){
+        req.session.score++;
+        req.session.done.push(quiz.id);
+    }
+
+    var score = req.session.score || 0;
+    var done = req.session.done || [];
 
     res.render('quizzes/random_result', {
         quiz,
