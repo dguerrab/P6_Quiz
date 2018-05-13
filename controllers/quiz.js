@@ -153,3 +153,80 @@ exports.check = (req, res, next) => {
         answer
     });
 };
+
+// GET /quizzes/randomplay
+exports.randomplay = (req, res, next) => {
+
+    var score = req.session.score || 0;
+    var done = req.session.done || [];
+    var questions = [];
+
+    if (score == 0){
+        models.quiz.findAll()
+        .forEach(quiz => {
+            questions.push(quiz.id);
+        }).then(() => {
+            questions[Math.floor(Math.random()*questions.length)];
+        }).then(id => {
+            models.quiz.findById(id)
+        }).then(quiz => {
+            if (quiz) {
+                done.push(id);
+                const {query} = req;
+                const answer = query.answer || '';
+                res.render('quizzes/randomplay', {
+                    quiz,
+                    answer,
+                    score,
+                    done
+                });
+            } else {
+                throw new Error('There is no quiz with id=' + quizId);
+            }
+        })
+        .catch(error => next(error));
+    }
+
+    models.quiz.findById(id)
+    .then(quiz => {
+        if (quiz) {
+            req.quiz = quiz;
+            done.push(id);
+        } else {
+            throw new Error('There is no quiz with id=' + quizId);
+        }
+    })
+    .catch(error => next(error));
+
+    const {query} = req;
+
+    const answer = query.answer || '';
+
+    res.render('quizzes/randomplay', {
+        quiz,
+        answer,
+        score,
+        done
+    });
+};
+
+
+// GET /quizzes/randomcheck/:quizId
+exports.randomcheck = (req, res, next) => {
+
+    const {quiz, query} = req;
+
+    var score = req.session.score || 0;
+    var done = req.session.done || [];
+
+    const answer = query.answer || "";
+    const result = answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim();
+
+    res.render('quizzes/random_result', {
+        quiz,
+        result,
+        answer,
+        score,
+        done
+    });
+};
