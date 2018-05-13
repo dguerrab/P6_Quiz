@@ -158,7 +158,6 @@ exports.check = (req, res, next) => {
 exports.randomplay = (req, res, next) => {
 
     var score = req.session.score || 0;
-    var done = req.session.done || [];
     var questions = req.session.questions || [];
 
     if (score == 0){
@@ -166,19 +165,18 @@ exports.randomplay = (req, res, next) => {
         .each(quiz => {
             questions.push(quiz.id);
         }).then(() => {
-            var id = questions[Math.floor(Math.random()*questions.length)];
+            var i = Math.floor(Math.random()*questions.length);
+            var id = questions[i];
             models.quiz.findById(id)
             .then(quiz => {
                 if (quiz) {
-                    done.push(id);
-                    questions.splice(id, 1);
+                    questions.splice(i, 1);
                     const {query} = req;
                     const answer = query.answer || '';
                     res.render('quizzes/random_play', {
                         quiz,
                         answer,
                         score,
-                        done,
                         questions
                     });
                 } else {
@@ -197,7 +195,6 @@ exports.randomplay = (req, res, next) => {
         models.quiz.findById(id)
         .then(quiz => {
             if (quiz) {
-                done.push(id);
                 questions.splice(id, 1);
                 const {query} = req;
                 const answer = query.answer || '';
@@ -205,7 +202,6 @@ exports.randomplay = (req, res, next) => {
                     quiz,
                     answer,
                     score,
-                    done,
                     questions
                 });
             } else {
@@ -230,7 +226,6 @@ exports.randomcheck = (req, res, next) => {
     }
 
     var score = req.session.score || 0;
-    var done = req.session.done || [];
     var questions = req.session.questions || [];
 
     if(questions.length > 0){
@@ -238,8 +233,7 @@ exports.randomcheck = (req, res, next) => {
             quiz,
             result,
             answer,
-            score,
-            done
+            score
         });
     } else {
         res.render('quizzes/random_nomore', {score});
