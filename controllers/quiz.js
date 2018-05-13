@@ -174,7 +174,7 @@ exports.randomplay = (req, res, next) => {
                     questions.splice(id, 1);
                     const {query} = req;
                     const answer = query.answer || '';
-                    res.render('quizzes/randomplay', {
+                    res.render('quizzes/random_play', {
                         quiz,
                         answer,
                         score,
@@ -196,7 +196,7 @@ exports.randomplay = (req, res, next) => {
                 questions.splice(id, 1);
                 const {query} = req;
                 const answer = query.answer || '';
-                res.render('quizzes/randomplay', {
+                res.render('quizzes/random_play', {
                     quiz,
                     answer,
                     score,
