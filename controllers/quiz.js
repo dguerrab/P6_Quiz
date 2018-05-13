@@ -222,11 +222,11 @@ exports.randomcheck = (req, res, next) => {
 
     if(result){
         req.session.score++;
-        req.session.done.push(quiz.id);
     }
 
     var score = req.session.score || 0;
     var done = req.session.done || [];
+    var questions = req.session.questions || [];
 
     res.render('quizzes/random_result', {
         quiz,
