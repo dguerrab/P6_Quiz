@@ -188,7 +188,12 @@ exports.randomplay = (req, res, next) => {
         })
         .catch(error => next(error));
     } else {
-        var id = questions[Math.floor(Math.random()*questions.length)];
+        var id = 0;
+        if (questions.length == 1) {
+            id = questions[1];
+        } else {
+            id = questions[Math.floor(Math.random()*questions.length)];  
+        }
         models.quiz.findById(id)
         .then(quiz => {
             if (quiz) {
@@ -228,11 +233,15 @@ exports.randomcheck = (req, res, next) => {
     var done = req.session.done || [];
     var questions = req.session.questions || [];
 
-    res.render('quizzes/random_result', {
-        quiz,
-        result,
-        answer,
-        score,
-        done
-    });
+    if(questions.length > 0){
+        res.render('quizzes/random_result', {
+            quiz,
+            result,
+            answer,
+            score,
+            done
+        });
+    } else {
+        res.render('quizzes/random_nomore', {score});
+    }
 };
