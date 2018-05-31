@@ -5,7 +5,10 @@ module.exports = {
         return queryInterface.addColumn(
             'tips',
             'authorId',
-            {type: Sequelize.INTEGER}
+            {type: Sequelize.INTEGER},
+            {
+                sync: {force: true}
+            }
         );
     },
 
