@@ -226,3 +226,98 @@ exports.check = (req, res, next) => {
         answer
     });
 };
+
+// GET /quizzes/randomplay
+exports.randomplay = (req, res, next) => {
+
+    var score = req.session.score || 0;
+    var questions = req.session.questions || [];
+
+    if (score == 0){
+        models.quiz.findAll()
+        .each(quiz => {
+            questions.push(quiz.id);
+        }).then(() => {
+            var i = Math.floor(Math.random()*questions.length);
+            var id = questions[i];
+            models.quiz.findById(id)
+            .then(quiz => {
+                if (quiz) {
+                    questions.splice(i, 1);
+                    const {query} = req;
+                    const answer = query.answer || '';
+                    res.render('quizzes/random_play', {
+                        quiz,
+                        answer,
+                        score,
+                        questions
+                    });
+                } else {
+                    req.session.score = 0;
+                    req.session.questions = [];
+                    throw new Error('There is no quiz with id=' + id);
+                }
+            });
+        })
+        .catch(error => next(error));
+    } else {
+        var id = 0;
+        if (questions.length == 1) {
+            id = questions[1];
+        } else {
+            id = questions[Math.floor(Math.random()*questions.length)];  
+        }
+        models.quiz.findById(id)
+        .then(quiz => {
+            if (quiz) {
+                questions.splice(id, 1);
+                const {query} = req;
+                const answer = query.answer || '';
+                res.render('quizzes/random_play', {
+                    quiz,
+                    answer,
+                    score,
+                    questions
+                });
+            } else {
+                req.session.score = 0;
+                req.session.questions = [];
+                throw new Error('There is no quiz with id=' + id);
+            }
+        })
+        .catch(error => next(error));
+    }
+};
+
+
+// GET /quizzes/randomcheck/:quizId
+exports.randomcheck = (req, res, next) => {
+
+    const {quiz, query} = req;
+
+    const answer = query.answer || "";
+    const result = answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim();
+
+    if(result){
+        req.session.score++;
+    } else {
+        req.session.score = 0;
+        req.session.questions = [];
+    }
+
+    var score = req.session.score || 0;
+    var questions = req.session.questions || [];
+
+    if(questions.length > 0){
+        res.render('quizzes/random_result', {
+            quiz,
+            result,
+            answer,
+            score
+        });
+    } else {
+        req.session.score = 0;
+        req.session.questions = [];
+        res.render('quizzes/random_nomore', {score});
+    }
+};
