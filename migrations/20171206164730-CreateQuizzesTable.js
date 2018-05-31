@@ -28,6 +28,9 @@ module.exports = {
                     type: Sequelize.DATE,
                     allowNull: false
                 }
+            },
+            {
+                sync: {force: true}
             }
         );
     },

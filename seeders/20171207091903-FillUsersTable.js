@@ -15,6 +15,20 @@ module.exports = {
                 createdAt: new Date(), updatedAt: new Date()
             },
             {
+                username: 'Anonymous',
+                password: crypt.encryptPassword('', 'aaaa'),
+                salt: 'aaaa',
+                isAdmin: true,
+                createdAt: new Date(), updatedAt: new Date()
+            },
+            {
+                username: 'registrado',
+                password: crypt.encryptPassword('1234', 'aaaa'),
+                salt: 'aaaa',
+                isAdmin: true,
+                createdAt: new Date(), updatedAt: new Date()
+            },
+            {
                 username: 'pepe',
                 password: crypt.encryptPassword('5678', 'bbbb'),
                 salt: 'bbbb',

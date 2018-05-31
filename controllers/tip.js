@@ -26,7 +26,7 @@ exports.create = (req, res, next) => {
         {
             text: req.body.text,
             quizId: req.quiz.id,
-            authorId
+            authorId: authorId
         });
 
     tip.save({fields: ["text", "quizId", "authorId"]})
