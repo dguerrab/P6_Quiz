@@ -123,6 +123,14 @@ router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
 router.get('/quizzes/randomplay',          quizController.randomplay);
 router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomcheck);
 
+router.get('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/edit', 
+	sessionController.loginRequired,
+    tipController.adminOrAuthorRequired,
+    tipController.edit);
+router.put('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)', 
+	sessionController.loginRequired,
+	tipController.adminOrAuthorRequired,
+	tipController.update);
 
 router.post('/quizzes/:quizId(\\d+)/tips',
     sessionController.loginRequired,

@@ -10,7 +10,7 @@
         <% if (accepted || isAdmin || isQuizAuthor) { %>
 
             <li>
-                <%= tip.text %> <small> Made by <%= tip.author ? tip.author.username : "Anonymous" %> </small>
+                <%= tip.text %> <sub> Made by <%= tip.author ? tip.author.username : "Anonymous" %></sub>
                 <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
 
                     <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/accept?_method=PUT">
@@ -19,7 +19,15 @@
 
                 <% } %>
 
-                <% if (isAdmin || isQuizAuthor) { %>
+                <% if (isAdmin || isQuizAuthor || isTipAuthor) { %>
+                    
+                    <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/edit">
+                        <button>Edit</button>
+                    </a>
+
+                <% } %>
+
+                <% if (isAdmin || isQuizAuthor || isTipAuthor) { %>
 
                     <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE">
                         <button>Delete</button>
